@@ -14,7 +14,9 @@ def knn(data, predict, k=3):
 
     votes = [i[1] for i in sorted(distances)[:k]]
     vote_result = Counter(votes).most_common(1)[0][0]
-    return vote_result
+    confidence = Counter(votes).most_common(1)[0][1]/k
+    # print(vote_result, confidence)
+    return vote_result, confidence
 
 df = pd.read_csv('breast-cancer-wisconsin.csv')
 df.replace('?', -99999, inplace = True)
@@ -54,14 +56,18 @@ dataset[4] = dataset[4][:-test_size_4]
 correct = 0
 
 for i in sample_2:
-    knn_result = knn(dataset, i, 5)
+    knn_result, confidence= knn(dataset, i, 5)
     if knn_result==2:
         correct+=1
+    else:
+        print(confidence)
 
 for i in sample_4:
-    knn_result = knn(dataset, i, 5)
+    knn_result, confidence = knn(dataset, i, 5)
     if knn_result==4:
         correct+=1
+    else:
+        print(confidence)
 
 accuracy = correct/(test_size_2 + test_size_4)*100.0
 
